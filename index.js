@@ -38,27 +38,31 @@ app.use(
 );
 app.use(cors("*"));
 app.post('/sms', async (req, res) => {
-    try {
-        const twiml = new MessagingResponse();
+  try {
+    const twiml = new MessagingResponse();
+    const message = twiml.message();
 
-        await utils.resolveBankAccount(req.body)
-        return res.type('text/xml').status(200).send({
-            responseCode: 200,
-            status: "success",
-            message: twiml.toString(),
-            response: null
-        });
-    } catch (error) {
-        return res.status(500).send({
-            responseCode: 500,
-            status: "failure",
-            message: "An error occured",
-            response: error
-        });
-    }
+    message.body('Thanks, we have recieved your application');
+
+
+    await utils.resolveBankAccount(req.body)
+    return res.type('text/xml').status(200).send({
+      responseCode: 200,
+      status: "success",
+      message: twiml.toString(),
+      response: null
+    });
+  } catch (error) {
+    return res.status(500).send({
+      responseCode: 500,
+      status: "failure",
+      message: "An error occured",
+      response: error
+    });
+  }
 
 });
 
 app.listen(3000, () => {
-    console.log('Express server listening on port 3000');
+  console.log('Express server listening on port 3000');
 });
